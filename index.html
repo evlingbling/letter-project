@@ -1,360 +1,272 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Observer Effect — Sunset Glass Edition</title>
+<title>Raining Letters— Aesthetic Drift</title>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Comfortaa:wght@500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet" />
 
 <style>
 :root{
-  --bg-0:hsl(16 100% 96%); --bg-1:hsl(22 95% 92%); --bg-2:hsl(338 85% 94%); --bg-3:hsl(267 65% 92%);
-  --fg:hsl(260 25% 18%); --fg-2:hsl(260 14% 38%); --ring:hsl(280 90% 70%);
-  --shadow-soft:0 8px 30px rgba(80,40,60,.12); --shadow-strong:0 16px 50px rgba(80,40,60,.18);
+  /* 칩 진한 정도 조절 변수 */
+  --chip-bg-alpha:.58;             /* 기본 내부 채움 투명도 */
+  --chip-border-alpha:.98;         /* 기본 테두리 투명도 */
+  --chip-glow:0 0 10px rgba(255,255,255,.85);
+
+  --floaty-sat:78%;
+  --floaty-light:56%;
+
+  /* 기본 테마(Sunset)는 JS로 바뀜 */
+  --bg0:hsl(16 100% 96%);
+  --bg1:hsl(22 95% 92%);
+  --bg2:hsl(338 85% 94%);
+  --bg3:hsl(267 65% 92%);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; padding:5vmin 6vmin;
   font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  font-weight:400; font-size:18px; line-height:1.7; letter-spacing:.02em; color:var(--fg);
+  font-size:18px; line-height:1.7; letter-spacing:.02em; color:hsl(260 25% 18%);
   background:
-    radial-gradient(1200px 900px at 20% 10%, var(--bg-2), transparent 60%),
-    radial-gradient(1200px 900px at 85% 0%,  var(--bg-1), transparent 60%),
-    radial-gradient(1200px 900px at 50% 95%, var(--bg-3), transparent 60%),
-    var(--bg-0);
-  overflow-x:hidden; display:grid; grid-template-rows:auto auto 1fr; gap:1.2rem; position:relative; -webkit-font-smoothing:antialiased;
+    radial-gradient(1200px 900px at 20% 10%, var(--bg2), transparent 60%),
+    radial-gradient(1200px 900px at 85% 0%,  var(--bg1), transparent 60%),
+    radial-gradient(1200px 900px at 50% 95%, var(--bg3), transparent 60%),
+    var(--bg0);
+  overflow-x:hidden; display:grid; grid-template-rows:auto auto 1fr; gap:1.2rem; position:relative;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* sunset fog (조금 더 빠르게) */
+/* mesh & grain */
 .mesh{
   position:fixed; inset:-20vmax; z-index:-4; pointer-events:none;
-  background:
-    radial-gradient(35% 35% at 20% 20%, hsl(22 95% 85% / .55), transparent 70%),
-    radial-gradient(42% 42% at 80% 25%, hsl(338 85% 85% / .45), transparent 70%),
-    radial-gradient(38% 38% at 70% 80%, hsl(267 65% 82% / .50), transparent 70%);
-  filter:blur(40px) saturate(110%);
+  filter:blur(40px) saturate(115%);
   animation:drift 28s linear infinite;
 }
 @keyframes drift{0%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(3%,-2%,0) rotate(6deg)}100%{transform:none}}
-
-/* grain */
 .grain{position:fixed; inset:0; z-index:-3; pointer-events:none;
   background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".04"/></svg>');
   opacity:.4; mix-blend-mode:multiply;
 }
 
-/* ===== 더 빠르고 더 많은 귀여운 플로팅 ===== */
+/* floaties */
 .floaties{position:fixed; inset:0; z-index:-2; pointer-events:none; overflow:hidden}
 .floaty{
-  position:absolute;
-  font-size:var(--fs,20px);
-  filter:drop-shadow(0 6px 12px rgba(50,30,60,.18));
-  opacity:var(--op,.75);
-  will-change: transform, opacity;
-  animation:
-    floatY var(--dur,12s) linear infinite,
-    sway   var(--sway,5s) ease-in-out infinite alternate,
-    spin   var(--rot,10s) linear infinite,
-    twinkle var(--tw,2.4s) ease-in-out infinite;
+  position:absolute; font-size:var(--fs,20px);
+  filter:drop-shadow(0 6px 12px rgba(50,30,60,.22));
+  opacity:var(--op,.7); will-change:transform,opacity;
+  animation:floatY var(--dur,16s) linear infinite, sway var(--sway,7s) ease-in-out infinite alternate, spin var(--rot,18s) linear infinite, twinkle var(--tw,3s) ease-in-out infinite;
 }
-.layer-near  .floaty{ z-index:3 }
-.layer-mid   .floaty{ z-index:2 }
-.layer-far   .floaty{ z-index:1; filter:drop-shadow(0 3px 6px rgba(50,30,60,.12)) }
-
-@keyframes floatY{
-  from{ transform: translateY(140vh); }   /* 더 아래서 시작 */
-  to  { transform: translateY(-120vh); }   /* 화면 위쪽(헤더 위)까지 통과 */
-}
+@keyframes floatY{from{transform:translateY(140vh)} to{transform:translateY(-120vh)}}
 @keyframes sway{from{translate:0 0} to{translate:var(--dx,18px) 0}}
-@keyframes spin{from{rotate(0deg)} to{rotate(360deg)}}
-@keyframes twinkle{0%,100%{opacity:var(--op,.75)} 50%{opacity:calc(var(--op,.75) * .5)}}
+@keyframes spin{from{rotate(0)} to{rotate(360deg)}}
+@keyframes twinkle{0%,100%{opacity:var(--op,.7)} 50%{opacity:calc(var(--op,.7) * .5)}}
 
+/* header */
 header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-
-/* ✨ PRETTY TITLE */
 h1{
   margin:0;
   font-family:'Comfortaa','Plus Jakarta Sans',system-ui,sans-serif;
-  font-weight:700; letter-spacing:.02em; line-height:1.15;
+  font-weight:700; letter-spacing:.02em;
   font-size:clamp(1.7rem, 3.6vw + .2rem, 3.4rem);
-  position:relative;
-  background:linear-gradient(90deg,
-     hsl(22 95% 54%), hsl(338 85% 56%), hsl(267 65% 58%), hsl(22 95% 54%));
+  background:linear-gradient(90deg,hsl(22 95% 54%), hsl(338 85% 56%), hsl(267 65% 58%), hsl(22 95% 54%));
   background-size:300% 100%;
-  -webkit-background-clip:text; background-clip:text;
-  color:transparent;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
   animation:titleShift 12s ease-in-out infinite;
   text-shadow:0 1px 0 rgba(255,255,255,.55);
 }
 @keyframes titleShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-h1::after{
-  content:""; position:absolute; left:.1em; right:26%; bottom:-.35em; height:.55em;
-  border-radius:.55em;
-  background:linear-gradient(90deg, hsl(22 95% 80%/.8), hsl(338 85% 80%/.8));
-  filter:blur(4px) saturate(120%); opacity:.7;
-}
-h1 .modeTag{
-  font-family:'Plus Jakarta Sans', system-ui, sans-serif; font-weight:600;
-  font-size:clamp(.72rem, .55vw + .62rem, .95rem);
-  letter-spacing:.06em; padding:.22em .6em; margin-left:.5rem; border-radius:.8rem;
-  background:rgba(255,255,255,.35); border:1px solid rgba(255,255,255,.6);
-  backdrop-filter:blur(8px) saturate(135%); -webkit-backdrop-filter:blur(8px) saturate(135%);
-  color:hsl(260 25% 22%);
-}
-
-/* glass controls */
 .toolbar{display:flex;gap:.6rem;flex-wrap:wrap}
-.chip,.btn,.mode{
+.btn{
   display:inline-flex;align-items:center;gap:.45rem;padding:.55em .9em;border-radius:1rem;
-  background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.55);
-  box-shadow:var(--shadow-soft);backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%);
+  background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 8px 30px rgba(80,40,60,.15);
+  backdrop-filter:blur(12px) saturate(120%);
   cursor:pointer;user-select:none;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;
 }
-.chip:hover,.btn:hover,.mode:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong)}
-.mode b{color:var(--ring)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 50px rgba(80,40,60,.22)}
 
-/* glass panel */
+/* input panel */
 .panel{
   display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;
   padding:1rem;border-radius:1.2rem;background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.55);
-  box-shadow:var(--shadow-soft);backdrop-filter:blur(14px) saturate(130%);
+  box-shadow:0 8px 30px rgba(80,40,60,.12);
+  backdrop-filter:blur(14px) saturate(130%);
 }
-.field{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:rgba(255,255,255,.3);border-radius:.9rem;border:1px solid rgba(255,255,255,.55)}
-label{font-size:.9rem;color:var(--fg-2)}
-input{border:none;outline:none;font:inherit;min-width:14ch;background:transparent;color:var(--fg)}
-.hint{margin:.2rem 0 0;color:var(--fg-2);font-size:.95rem;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-#output{display:flex;flex-wrap:wrap;gap:1rem 1.1rem;align-content:start;align-items:start;max-width:1100px;margin-inline:auto}
+.field{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:rgba(255,255,255,.33);border-radius:.9rem;border:1px solid rgba(255,255,255,.6)}
+label{font-size:.9rem;color:hsl(260 14% 38%)}
+input{
+  border:none;outline:none;font:inherit;background:transparent;color:hsl(260 25% 18%);
+  min-width:22ch;
+}
+.hint{margin:.2rem 0 0;color:hsl(260 14% 38%);font-size:.95rem;text-shadow:0 1px 0 rgba(255,255,255,.35)}
 
-/* glass chips (진한 노을) */
-#output span{
-  display:inline-block; --h:25; position:relative; padding:.42em .85em .48em; border-radius:1.1rem;
-  background:rgba(255,255,255,.35); border:1px solid rgba(255,255,255,.55);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 4px 12px rgba(60,30,40,.25);
-  color:var(--fg); backdrop-filter:blur(14px) saturate(140%); -webkit-backdrop-filter:blur(14px) saturate(140%);
-  cursor:pointer;
-  transition:width .25s ease, transform .16s ease, box-shadow .3s ease, background .25s ease, color .25s ease, border-color .25s ease;
+/* ===== Falling Chips ===== */
+.snow-layer{ position:fixed; inset:0; z-index:5; pointer-events:none; overflow:hidden; }
+.chip{
+  position:fixed; top:-10vh; left:0;
+  display:inline-block; padding:.42em .85em .48em; border-radius:1.1rem;
+  background:rgba(255,255,255,var(--chip-bg-alpha));            /* 기본 내부 채움(유리) */
+  border:1px solid hsl(var(--h,22) 82% 58% / var(--chip-border-alpha));
+  color:#fff; text-shadow:var(--chip-glow);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.85),
+    0 8px 26px rgba(60,30,40,.34);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  white-space:nowrap; will-change:transform,opacity;
+  transform:translate3d(0,-20vh,0);
+  transition:background .28s ease, box-shadow .28s ease, border-color .28s ease;
+  animation:
+    chip-fall var(--dur,12s) linear forwards,
+    chip-sway var(--sway,6s) ease-in-out infinite alternate,
+    chip-tilt var(--tilt,12s) linear infinite,
+    chip-fade var(--dur,12s) linear forwards;
+  pointer-events:auto;   /* 컨테이너는 막더라도 칩은 hover 가능 */
 }
-#output span:hover{
-  background:color-mix(in oklab, rgba(255,255,255,.45), hsl(var(--h) 70% 70% / .55));
-  border-color:hsl(var(--h) 70% 55% / .85);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 12px 44px hsl(var(--h) 70% 48% / .35);
-}
-#output span:focus-visible{outline:2px solid var(--ring);outline-offset:3px}
-body[data-mode="preview"] #output span:hover{color:transparent !important;text-shadow:none !important}
-body[data-mode="preview"] #output span::after{
-  content:attr(data-next); position:absolute; inset:0; display:grid; place-items:center;
-  color:#fff; text-shadow:0 0 10px rgba(255,255,255,.6); opacity:0; pointer-events:none; transition:opacity .22s ease;
-}
-body[data-mode="preview"] #output span:hover::after{opacity:1}
-body[data-mode="commit"] #output span:hover{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.7)}
-.committed{background:rgba(255,255,255,.45);border-color:hsl(45 85% 65%)}
 
-/* measure probe */
-.measure-probe{position:absolute;left:-9999px;top:-9999px;visibility:hidden;white-space:nowrap;font-family:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit}
+/* ✅ hover 시 내부가 ‘진하게 물드는’ 효과 */
+.chip:hover{
+  /* hue 컬러와 섞어 내부 채움을 더 진하게 */
+  background:
+    color-mix(in oklab, rgba(255,255,255,.35), hsl(var(--h) 85% 58% / .85));
+  border-color: hsl(var(--h) 90% 60% / 1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 12px 44px hsl(var(--h) 85% 52% / .55);
+}
 
-/* reduced motion */
+@keyframes chip-fall{0%{transform:translate3d(0,-20vh,0)}100%{transform:translate3d(0,120vh,0)}}
+@keyframes chip-sway{from{translate:0 0}to{translate:var(--dx,28px) 0}}
+@keyframes chip-tilt{from{rotate(0)}to{rotate(360deg)}}
+@keyframes chip-fade{0%{opacity:0}8%{opacity:1}85%{opacity:1}100%{opacity:0}}
+
 @media (prefers-reduced-motion:reduce){
   .mesh{animation:none}
   .floaty{animation:none}
-  .chip,.btn,.mode,#output span,h1{transition:none}
+  .chip{animation:none; opacity:1}
 }
 </style>
 </head>
-<body data-mode="preview">
-  <div class="mesh" aria-hidden="true"></div>
+<body>
+  <div class="mesh" id="mesh" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
-
-  <!-- 3 layers for parallax density -->
-  <div class="floaties layer-far"  id="floaties-far"  aria-hidden="true"></div>
-  <div class="floaties layer-mid"  id="floaties-mid"  aria-hidden="true"></div>
-  <div class="floaties layer-near" id="floaties-near" aria-hidden="true"></div>
+  <div class="floaties" id="floaties" aria-hidden="true"></div>
+  <div class="snow-layer" id="snow"></div>
 
   <header>
-    <h1>
-      Observer Effect
-      <span class="modeTag" id="modeLabel">Preview</span>
-    </h1>
+    <h1>Letters</h1>
     <div class="toolbar">
-      <button class="mode" id="toggleMode"><span>Switch to</span> <b>Commit</b></button>
-      <button class="chip" id="resetMemory">Reset Memory</button>
+      <button class="btn" id="shuffleTheme">Shuffle Aesthetic</button>
+      <button class="btn" id="clearAll">Clear Screen</button>
     </div>
   </header>
 
-  <section class="panel" aria-label="Add word">
-    <div class="field"><label for="word">Word</label><input id="word" type="text" placeholder="e.g., horizon" /></div>
-    <div class="field"><label for="alt">Alt</label><input id="alt" type="text" placeholder="optional (auto if empty)" /></div>
-    <button class="btn" id="addBtn">Add</button>
-    <div class="hint">Hover = preview · Commit = transform · Reset clears memory · <b>Tab</b> focus + <b>Enter</b> to commit</div>
+  <section class="panel" aria-label="입력">
+    <div class="field">
+      <label for="word">Type</label>
+      <input id="word" type="text" placeholder="단어(또는 문장)를 입력하고 Enter — 단어마다 글라스 칩이 떨어져요" />
+    </div>
+    <div class="hint">문장을 붙여넣으면 공백 단위로 칩이 여러 개 생깁니다.</div>
   </section>
 
-  <main>
-    <div id="output">
-      <span tabindex="0" data-stages="lie,blur,uncertain">truth</span>
-      <span tabindex="0" data-stages="absence,trace,void">presence</span>
-      <span tabindex="0" data-stages="forget,unlearn,erase">remember</span>
-      <span tabindex="0" data-stages="elsewhere,there,nowhere">here</span>
-      <span tabindex="0" data-stages="distance,untouch,remote">touch</span>
-      <span tabindex="0" data-stages="close,ajar,seal">open</span>
-      <span tabindex="0" data-stages="shadow,dusk,night">light</span>
-      <span tabindex="0" data-stages="later,soon?,never">now</span>
-      <span tabindex="0" data-stages="tide,drift,flux">fixed</span>
-      <span tabindex="0" data-stages="hiss,static,noise">signal</span>
-      <span tabindex="0" data-stages="random,entropy,chaos">order</span>
-      <span tabindex="0" data-stages="hollow,echo,quiet">voice</span>
-      <span tabindex="0" data-stages="below,fade,vanish">horizon</span>
-    </div>
-  </main>
-
 <script>
-const STORAGE_KEY='observer_effect_v4';
-const store={load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return{}}},save(o){localStorage.setItem(STORAGE_KEY,JSON.stringify(o))},clear(){localStorage.removeItem(STORAGE_KEY)}};
+/* ==== Themes ==== */
+const THEMES=[
+  {name:'Sunset',bg:{base:['hsl(16 100% 96%)','hsl(22 95% 92%)','hsl(338 85% 94%)','hsl(267 65% 92%)'],
+  mesh:['hsl(22 95% 85% / .55)','hsl(338 85% 85% / .45)','hsl(267 65% 82% / .50)']},
+  hues:[16,22,28,34,338,350,267,285]},
+  {name:'Twilight',bg:{base:['hsl(248 45% 96%)','hsl(258 55% 92%)','hsl(290 60% 94%)','hsl(220 40% 93%)'],
+  mesh:['hsl(258 70% 85% / .55)','hsl(290 65% 86% / .45)','hsl(220 55% 86% / .50)']},
+  hues:[252,268,284,298,220,232]},
+  {name:'Aurora',bg:{base:['hsl(165 55% 96%)','hsl(155 55% 92%)','hsl(210 52% 94%)','hsl(265 45% 93%)'],
+  mesh:['hsl(160 70% 84% / .55)','hsl(200 70% 86% / .45)','hsl(265 60% 86% / .50)']},
+  hues:[160,170,190,205,265,275]},
+  {name:'Peach Soda',bg:{base:['hsl(18 100% 96%)','hsl(25 95% 93%)','hsl(8 85% 95%)','hsl(40 80% 93%)'],
+  mesh:['hsl(18 95% 85% / .6)','hsl(8 85% 86% / .5)','hsl(40 80% 86% / .5)']},
+  hues:[12,18,24,34,8,40]},
+  {name:'Midnight Lagoon',bg:{base:['hsl(215 55% 95%)','hsl(210 50% 91%)','hsl(198 60% 93%)','hsl(245 45% 92%)'],
+  mesh:['hsl(205 70% 85% / .55)','hsl(198 70% 86% / .45)','hsl(245 60% 86% / .50)']},
+  hues:[198,205,212,230,245,255]}
+];
+const meshEl=document.getElementById('mesh');
+const floatiesHost=document.getElementById('floaties');
+const snow=document.getElementById('snow');
+const input=document.getElementById('word');
+let currentTheme=null;
 
-const output=document.getElementById('output');
-const toggleBtn=document.getElementById('toggleMode');
-const resetBtn=document.getElementById('resetMemory');
-const modeLabel=document.getElementById('modeLabel');
-const wordInput=document.getElementById('word');
-const altInput=document.getElementById('alt');
-const addBtn=document.getElementById('addBtn');
+function applyTheme(t){
+  currentTheme=t;
+  document.documentElement.style.setProperty('--bg0',t.bg.base[0]);
+  document.documentElement.style.setProperty('--bg1',t.bg.base[1]);
+  document.documentElement.style.setProperty('--bg2',t.bg.base[2]);
+  document.documentElement.style.setProperty('--bg3',t.bg.base[3]);
+  meshEl.style.background=`
+    radial-gradient(35% 35% at 20% 20%, ${t.bg.mesh[0]}, transparent 70%),
+    radial-gradient(42% 42% at 80% 25%, ${t.bg.mesh[1]}, transparent 70%),
+    radial-gradient(38% 38% at 70% 80%, ${t.bg.mesh[2]}, transparent 70%)`;
+  makeFloaties(t);
+}
+function randomTheme(prev){
+  let n=THEMES[Math.floor(Math.random()*THEMES.length)];
+  if(prev && n.name===prev.name) n=THEMES[(THEMES.indexOf(prev)+1)%THEMES.length];
+  return n;
+}
 
-const farEl=document.getElementById('floaties-far');
-const midEl=document.getElementById('floaties-mid');
-const nearEl=document.getElementById('floaties-near');
-
-/* sunset hues */
-const sunsetH=[16,22,28,34,338,350,267,285];
-function setHue(el,seed){const h=sunsetH[seed%sunsetH.length];el.style.setProperty('--h',h);}
-
-/* ===== Dense, faster, full-screen floaties ===== */
-(function makeFloaties(){
-  const glyphs=['✦','❋','✿','⋆','•','♡','◦','⟁','✧','✺'];
-  // 레이어별 개수 (총 150개)
-  const FAR=50, MID=60, NEAR=40;
-
-  function spawn(container, count, sizeMin, sizeMax, durMin, durMax, swayMin, swayMax, dxMin, dxMax, opMin, opMax, hueShift=0){
-    for(let i=0;i<count;i++){
-      const s=document.createElement('span');
-      s.className='floaty';
-      s.textContent=glyphs[(i+hueShift)%glyphs.length];
-
-      // 랜덤 스타일
-      const left = (Math.random()*100).toFixed(2)+'%';
-      const bottom = (-40 - Math.random()*60).toFixed(2)+'vh';
-      const fs = (sizeMin + Math.random()*(sizeMax-sizeMin)).toFixed(1)+'px';
-      const dur = (durMin + Math.random()*(durMax-durMin)).toFixed(2)+'s';
-      const sway = (swayMin + Math.random()*(swayMax-swayMin)).toFixed(2)+'s';
-      const dx = (dxMin + Math.random()*(dxMax-dxMin)).toFixed(0)+'px';
-      const rot = (6 + Math.random()*10).toFixed(2)+'s';
-      const tw  = (1.6 + Math.random()*2.0).toFixed(2)+'s';
-      const op  = (opMin + Math.random()*(opMax-opMin)).toFixed(2);
-      const hue = sunsetH[(i+hueShift)%sunsetH.length];
-
-      s.style.left=left; s.style.bottom=bottom;
-      s.style.setProperty('--fs',fs);
-      s.style.setProperty('--dur',dur);
-      s.style.setProperty('--sway',sway);
-      s.style.setProperty('--dx',dx);
-      s.style.setProperty('--rot',rot);
-      s.style.setProperty('--tw',tw);
-      s.style.setProperty('--op',op);
-      s.style.color=`hsl(${hue} 70% 60% / .9)`;
-      s.style.animationDelay=(Math.random()*-dur.replace('s','')).toFixed(2)+'s';
-
-      container.appendChild(s);
-    }
+/* floaties */
+function makeFloaties(t){
+  floatiesHost.innerHTML='';
+  const g=['✦','❋','✿','⋆','•','♡','◦','⟁','✧','✺'];
+  for(let i=0;i<60;i++){
+    const s=document.createElement('span');s.className='floaty';s.textContent=g[i%g.length];
+    const l=(Math.random()*100).toFixed(2)+'%',b=(-60-Math.random()*80).toFixed(2)+'vh';
+    const fs=(12+Math.random()*26).toFixed(1)+'px',dur=(14+Math.random()*12).toFixed(2)+'s',sway=(6+Math.random()*4).toFixed(2)+'s';
+    const dx=(8+Math.random()*22).toFixed(0)+'px',rot=(14+Math.random()*16).toFixed(2)+'s',tw=(2.4+Math.random()*2.6).toFixed(2)+'s';
+    const op=(0.45+Math.random()*0.45).toFixed(2),h=t.hues[i%t.hues.length];
+    s.style.left=l;s.style.bottom=b;s.style.setProperty('--fs',fs);s.style.setProperty('--dur',dur);
+    s.style.setProperty('--sway',sway);s.style.setProperty('--dx',dx);s.style.setProperty('--rot',rot);s.style.setProperty('--tw',tw);s.style.setProperty('--op',op);
+    s.style.color=`hsl(${h} var(--floaty-sat) var(--floaty-light) / .9)`;s.style.animationDelay=(Math.random()*-parseFloat(dur)).toFixed(2)+'s';
+    floatiesHost.appendChild(s);
   }
+}
 
-  // 원근감: 멀수록 작고 느리게 / 가까울수록 크고 빠르게
-// 원근감: 멀수록 작고 더 느리게 / 가까울수록 크지만 예전보다 느리게
-// FAR: 가장 느리고 작게
-spawn(farEl,  FAR, 10, 18, 28, 40, 7, 9,   8, 14, 0.35, 0.6, 0);
-// MID: 중간 속도/크기
-spawn(midEl,  MID, 16, 26, 24, 34, 6, 8,  12, 22, 0.55, 0.8, 1);
-// NEAR: 비교적 빠르지만 예전보다 느리게
-spawn(nearEl, NEAR,22, 34, 20, 28, 5, 7,  16, 28, 0.70, 0.95,2);
+/* spawn chip */
+function spawnChip(txt){
+  const chip=document.createElement('span');
+  chip.className='chip';
+  chip.textContent=txt;
+  const vw=Math.max(document.documentElement.clientWidth,window.innerWidth||0);
+  chip.style.left=Math.floor(Math.random()*(vw-60))+20+'px';
+  const hues=currentTheme?currentTheme.hues:THEMES[0].hues;
+  chip.style.setProperty('--h',hues[Math.floor(Math.random()*hues.length)]);
+  const dur=(9+Math.random()*10).toFixed(2)+'s',sway=(6+Math.random()*6).toFixed(2)+'s',tilt=(12+Math.random()*12).toFixed(2)+'s',dx=(18+Math.random()*34).toFixed(0)+'px';
+  chip.style.setProperty('--dur',dur);chip.style.setProperty('--sway',sway);chip.style.setProperty('--tilt',tilt);chip.style.setProperty('--dx',dx);
+  chip.addEventListener('animationend',e=>{if(e.animationName==='chip-fall')chip.remove();});
+  snow.appendChild(chip);
+}
+function spawnFromInput(v){v.trim().split(/\s+/).filter(Boolean).forEach(spawnChip);}
 
+/* events */
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();if(input.value.trim()){spawnFromInput(input.value);input.value='';}}
+});
+document.getElementById('clearAll').onclick=()=>document.querySelectorAll('.chip').forEach(c=>c.remove());
+document.getElementById('shuffleTheme').onclick=()=>{
+  const next=randomTheme(currentTheme);
+  applyTheme(next);
+  // 기존 칩들 색 재적용
+  document.querySelectorAll('.chip').forEach(el=>{
+    const hue=next.hues[Math.floor(Math.random()*next.hues.length)];
+    el.style.setProperty('--h',hue);
+  });
+};
 
+/* init */
+(function init(){
+  const t=randomTheme(null);
+  applyTheme(t);
 })();
-
-/* ===== word transformation utils ===== */
-const antonym={'order':'chaos','signal':'noise','remember':'forget','self':'other','love':'lose','fear':'free','truth':'lie','real':'fake','open':'close','light':'dark','yes':'no','left':'right','up':'down','start':'end','in':'out','here':'there','full':'empty','presence':'absence','fixed':'flux'};
-const vowels=['a','e','i','o','u'];
-function cycleVowel(w){const a=w.split('');for(let i=0;i<a.length;i++){const c=a[i].toLowerCase(),idx=vowels.indexOf(c);if(idx>=0){const n=vowels[(idx+1)%vowels.length];a[i]=(a[i]===c)?n:n.toUpperCase();return a.join('')}}return w;}
-function dropVowels(w){const r=w.replace(/[aeiouAEIOU]/g,'');return r.length?r:w;}
-function innerShuffle(w){if(w.length<4)return w.split('').reverse().join('');const f=w[0],l=w[w.length-1],m=w.slice(1,-1).split('');for(let i=m.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[m[i],m[j]]=[m[j],m[i]]}return f+m.join('')+l;}
-function smallGlitch(w){const n={'l':'i','i':'l','o':'0','e':'ɛ','s':'z','z':'s','a':'ä','t':'+','g':'9','b':'6'},a=w.split('');for(let i=0;i<a.length;i++){const c=a[i].toLowerCase();if(n[c]){a[i]=(a[i]===c)?n[c]:n[c].toUpperCase();return a.join('')}}return w;}
-function generateStages(w,a){const b=w.trim(),s1=(a&&a.trim())||antonym[b.toLowerCase()]||cycleVowel(b),s2=dropVowels(b),s3=innerShuffle(b.length>6?b:smallGlitch(b)),u=[];[s1,s2,s3].forEach(v=>{if(v&&!u.includes(v)&&v!==b)u.push(v)});if(!u.length)u.push(b);return u.slice(0,3).join(',');}
-
-/* width auto-fit for preview text */
-const probe=document.createElement('span');probe.className='measure-probe';document.body.appendChild(probe);
-function fitWidthToText(el,text){
-  const cs=getComputedStyle(el);
-  probe.style.fontFamily=cs.fontFamily; probe.style.fontSize=cs.fontSize; probe.style.fontWeight=cs.fontWeight; probe.style.letterSpacing=cs.letterSpacing;
-  probe.textContent=text;
-  const contentW=probe.getBoundingClientRect().width;
-  const padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0, borL=parseFloat(cs.borderLeftWidth)||0, borR=parseFloat(cs.borderRightWidth)||0;
-  const target=Math.ceil(contentW+padL+padR+borL+borR);
-  el.style.width=target+'px';
-}
-
-/* init / state */
-const saved=store.load();
-function items(){return Array.from(output.querySelectorAll('span'))}
-function ensureIds(){items().forEach((el,i)=>{if(!el.dataset.id)el.dataset.id=String(i); setHue(el,i);})}
-function applySaved(el){const st=saved[el.dataset.id]; if(!st) return; if(typeof st.stageIdx==='number') el.dataset.stageIdx=String(st.stageIdx); if(st.text){el.textContent=st.text; el.classList.add('committed');}}
-function computeNext(el){const s=(el.dataset.stages||'').split(',').map(x=>x.trim()).filter(Boolean); let i=parseInt(el.dataset.stageIdx||'0',10); if(isNaN(i)) i=0; const next=s[Math.min(i,s.length-1)]||''; el.dataset.next=next; return {stages:s, idx:i, next};}
-function refresh(){ensureIds(); items().forEach(el=>{applySaved(el); computeNext(el);});}
-refresh();
-
-/* mode toggle */
-function setMode(m){document.body.setAttribute('data-mode',m); const c=m==='commit'; modeLabel.textContent=c?'Commit':'Preview'; toggleBtn.innerHTML=c?`<span>Switch to</span> <b>Preview</b>`:`<span>Switch to</span> <b>Commit</b>`;}
-document.getElementById('toggleMode').addEventListener('click',()=>setMode(document.body.getAttribute('data-mode')==='preview'?'commit':'preview'));
-setMode('preview');
-
-/* commit swap */
-function commitSwap(el){
-  const id=el.dataset.id, {stages:s, idx:i, next:n}=computeNext(el); if(!n) return;
-  el.textContent=n; el.classList.add('committed');
-  const ni=Math.min(i+1,s.length-1); el.dataset.stageIdx=String(ni);
-  saved[id]={text:el.textContent, stageIdx:ni}; store.save(saved); computeNext(el);
-}
-
-/* wire interactions */
-function wire(el){
-  el.addEventListener('mouseenter',()=>{
-    if(document.body.getAttribute('data-mode')==='commit'){commitSwap(el);}
-    else{const next=el.dataset.next||''; if(next) fitWidthToText(el,next);}
-  });
-  el.addEventListener('mouseleave',()=>{
-    if(document.body.getAttribute('data-mode')==='preview') el.style.width='';
-  });
-  el.addEventListener('touchstart',()=>{
-    if(document.body.getAttribute('data-mode')==='commit'){commitSwap(el);}
-    else{const next=el.dataset.next||''; if(next) fitWidthToText(el,next);}
-  },{passive:true});
-  el.addEventListener('keydown',(e)=>{
-    if(e.key==='Enter' && document.body.getAttribute('data-mode')==='commit') commitSwap(el);
-  });
-}
-items().forEach(wire);
-
-/* add word */
-function addWord(w,a){
-  const c=(w||'').trim(); if(!c) return;
-  const el=document.createElement('span'); el.textContent=c; el.tabIndex=0;
-  el.dataset.stages=generateStages(c,a);
-  el.dataset.id=String(items().length + 1 + Math.floor(Math.random()*999));
-  output.appendChild(el); setHue(el, Number(el.dataset.id)); wire(el); computeNext(el);
-  wordInput.value=''; altInput.value='';
-}
-addBtn.addEventListener('click',()=>addWord(wordInput.value,altInput.value));
-[wordInput,altInput].forEach(inp=>inp.addEventListener('keydown',(e)=>{if(e.key==='Enter') addWord(wordInput.value,altInput.value)}));
-
-/* reset */
-resetBtn.addEventListener('click',()=>{store.clear(); location.reload();});
 </script>
 </body>
 </html>
